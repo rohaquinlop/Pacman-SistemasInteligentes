@@ -389,11 +389,11 @@ class CornersProblem(search.SearchProblem):
                     corner1_1[x][y] = dst + 1
                     queue.push((((x, y), []), dst + 1))
 
-        self.conersDistance = dict()
-        self.conersDistance[(1, 1)] = corner1_1
-        self.conersDistance[(1, top)] = corner1_top
-        self.conersDistance[(right, 1)] = corner_right_1
-        self.conersDistance[(right, top)] = corner_right_top
+        self.cornersDistance = dict()
+        self.cornersDistance[(1, 1)] = corner1_1
+        self.cornersDistance[(1, top)] = corner1_top
+        self.cornersDistance[(right, 1)] = corner_right_1
+        self.cornersDistance[(right, top)] = corner_right_top
 
     def getStartState(self):
         """
@@ -478,10 +478,26 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
     position, cornersLeft = state
-
     ans = 0
-    for corner in cornersLeft:
-        ans += problem.conersDistance[corner]
+    cornersLeft = list(cornersLeft)
+
+    if problem.isGoalState(state):
+        return ans
+
+    # for corner in cornersLeft:
+    #     ans = max(ans, util.manhattanDistance(position, corner))
+
+    while len(cornersLeft) > 0:
+        minDist = list()
+
+        for corner in cornersLeft:
+            dst = util.manhattanDistance(position, corner)
+            minDist.append((dst, corner))
+        dst, corner = min(minDist)
+        ans += dst
+        cornersLeft.remove(corner)
+        position = corner
+
     return ans
 
 
